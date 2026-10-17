@@ -59,6 +59,7 @@ export class Graph {
     this.client = await FalkorDB.connect({
       host: config.falkordb.host,
       port: config.falkordb.port,
+      username: process.env.FALKORDB_USERNAME || "default",
       password: config.falkordb.password,
       socket: { connectTimeout: 8000 },
     });

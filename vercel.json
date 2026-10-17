@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://tangle-api-ywzi.onrender.com/api/:path*"
+    }
+  ]
+}
