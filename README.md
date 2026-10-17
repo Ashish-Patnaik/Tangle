@@ -664,12 +664,6 @@ Stated plainly, because a tool that hides these gets found out in the first five
 
 ---
 
-## 🧭 Honest scope
-
-This is a change-impact tool with measured limits, not a claim of completeness. What it does well is say, with receipts, which files in your repository move together and why. What it does not do is tell you whether your code is correct.
-
----
-
 <div align="center">
   Built for <b>Graph Hacks: Context for AI Agents</b> · WeMakeDevs × FalkorDB
 </div>
