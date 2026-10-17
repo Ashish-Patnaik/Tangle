@@ -124,7 +124,7 @@ export function toRepoRelative(rawPath: string, root: string): string {
   if (isAbsolute && normalisedRoot) {
     const caseInsensitive = process.platform === "win32";
     const rootCmp = caseInsensitive ? normalisedRoot.toLowerCase() : normalisedRoot;
-    const pathCmp = caseInsensitive ? normalised : normalised.toLowerCase();
+    const pathCmp = caseInsensitive ? normalised.toLowerCase() : normalised;
     if (pathCmp === rootCmp) return "";
     if (pathCmp.startsWith(`${rootCmp}/`)) {
       return normalised.slice(normalisedRoot.length + 1);

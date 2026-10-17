@@ -447,9 +447,9 @@ async function handleMessage(message: any) {
         lines.push(`Bus factor (${report.busFactor.length}) - concentration of coupling knowledge:`);
         for (const b of report.busFactor) {
           lines.push(`  ${b.login} holds ${(b.shareOfCouplings * 100).toFixed(1)}% of all couplings across ${b.files} file(s)`);
+        }
 
         sendResponse(message.id, { content: [{ type: "text", text: lines.join("\n") }] });
-        }
 
       } catch (err: any) {
         sendResponse(message.id, {

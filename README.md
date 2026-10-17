@@ -101,7 +101,7 @@ Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, Codex CLI and Gemini CLI
 ```json
 {
   "mcpServers": {
-    "tangle": { "command": "npx", "args": ["--yes", "tangle-mcp", "--mcp"] }
+    "tangle": { "command": "npx", "args": ["--yes", "tangle", "--mcp"] }
   }
 }
 ```
@@ -661,12 +661,6 @@ Stated plainly, because a tool that hides these gets found out in the first five
 - **Provenance is recovered from commit messages only.** A rationale that was never written into a commit — a Slack thread, a design doc — is invisible to it.
 - **One pre-existing defect, now fixed.** `verify` used to report 18 of 25 couplings where the stored count disagreed with a recount from the commit log. The cause was a per-file partner budget in `computeCouplings` that skipped the *increment* as well as the storage, making `coChanges` an undercount for exactly the files with the most partners — `package.json` has 5,912 in `vercel/next.js` against a budget of 400. Counts are now exact; the budget bounds only what gets stored, and the ingest report says how many strong pairs it excluded. `verify` passes 25 of 25.
 - **A reversed relationship direction returns zero rows, not an error.** Two such bugs shipped here — `TOUCHED_IN` points File→Commit and `AUTHORED` points Commit→Person — and both produced "0 rows" that is indistinguishable from an empty repository. `npm run verify` now asserts those relationships exist before trusting any traversal that depends on them, so that failure mode has a name.
-
----
-
-## 🧭 Honest scope
-
-This is a change-impact tool with measured limits, not a claim of completeness. What it does well is say, with receipts, which files in your repository move together and why. What it does not do is tell you whether your code is correct.
 
 ---
 
