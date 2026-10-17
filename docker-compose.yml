@@ -1,0 +1,43 @@
+services:
+  falkordb:
+    image: falkordb/falkordb:latest
+    container_name: tangle-falkordb
+    # Come back up by itself. The default policy is `no`, so a Docker restart, a
+    # reboot, or `docker compose down` leaves the container stopped and it stays
+    # stopped. Every API call then returns "FalkorDB is not reachable" while
+    # `npm run serve` looks healthy, because the app was never what died - the
+    # database was. Cost two confused debugging detours in one session before the
+    # cause turned out to be a stopped container rather than a code fault.
+    restart: unless-stopped
+    ports:
+      # Bound to loopback. FalkorDB ships with no authentication and warns about
+      # it on start-up; 0.0.0.0 would expose the entire coupling graph to the
+      # network. Loopback keeps "0.0.0.0:6379" off every external interface while
+      # staying reachable from the host, which is all this needs.
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - falkordb-data:/data
+    command:
+      - redis-server
+      # Persistence ON, deliberately. `--save ""` disables snapshotting outright,
+      # so every container restart silently discards the entire graph and the next
+      # command has to rebuild it from minutes of git history. That is the single
+      # largest cause of "it takes ages": not a slow ingest, but a lost one.
+      - --save
+      - "900 1"
+      - --stop-writes-on-bgsave-error
+      - "no"
+      - --appendonly
+      - "no"
+      - --rdbcompression
+      - "yes"
+      - --loadmodule
+      - /usr/lib/redis/modules/graph.so
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  falkordb-data:

@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 900" width="1180" height="900" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+  <defs>
+    <style>
+      .box { fill:#FFFFFF; stroke:#111318; stroke-width:2.5; rx:10 }
+      .head { font-size:15px; font-weight:700; fill:#111318 }
+      .sub  { font-size:11.5px; fill:#4A5058 }
+      .mono { font-size:11px; fill:#111318 }
+      .band { fill:#F4F5F7; stroke:#111318; stroke-width:2.5; rx:12 }
+      .bandlbl { font-size:12.5px; font-weight:700; fill:#111318; letter-spacing:1.1px }
+      .lbl  { font-size:11.5px; font-weight:600; fill:#111318 }
+      .note { font-size:11px; fill:#4A5058 }
+      .hi   { fill:#FFF3E6; stroke:#E06A1B; stroke-width:2.5; rx:10 }
+      .ok   { fill:#E9F7EF; stroke:#1F7A45; stroke-width:2.5; rx:10 }
+      .warn { fill:#FFF8E1; stroke:#B07A00; stroke-width:2.5; rx:10 }
+      .l1 { stroke:#111318; stroke-width:2; fill:none; marker-end:url(#a) }
+      .l2 { stroke:#4A5058; stroke-width:2; fill:none; stroke-dasharray:6 4; marker-end:url(#a2) }
+      .l3 { stroke:#E06A1B; stroke-width:2.5; fill:none; marker-end:url(#a3) }
+    </style>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#111318"/>
+    </marker>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4A5058"/>
+    </marker>
+    <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#E06A1B"/>
+    </marker>
+  </defs>
+
+  <rect width="1180" height="900" fill="#FFFFFF"/>
+
+  <text x="24" y="38" font-size="21" font-weight="700" fill="#111318">Tangle — architecture</text>
+  <text x="24" y="60" font-size="12.5" fill="#4A5058">Behaviour mined from git history, stored as a graph, checked against an oracle recomputed from scratch.</text>
+
+  <!-- ============ 1. INGEST ============ -->
+  <rect class="band" x="24" y="80" width="1132" height="150"/>
+  <text class="bandlbl" x="40" y="102">1 · INGEST  (once per repo, ~124 s on next.js)</text>
+
+  <rect class="box" x="44" y="116" width="168" height="94"/>
+  <text class="head" x="58" y="138">git history</text>
+  <text class="sub"  x="58" y="158">readHistory()</text>
+  <text class="mono" x="58" y="177">35,771 commits</text>
+  <text class="mono" x="58" y="195">mass commits dropped</text>
+
+  <rect class="box" x="236" y="116" width="196" height="94"/>
+  <text class="head" x="250" y="138">coupling</text>
+  <text class="sub"  x="250" y="158">computeCouplings()</text>
+  <text class="mono" x="250" y="177">co-change &gt;= 3</text>
+  <text class="mono" x="250" y="195">per-file pair cap</text>
+
+  <rect class="box" x="456" y="116" width="196" height="94"/>
+  <text class="head" x="470" y="138">static imports</text>
+  <text class="sub"  x="470" y="158">extractImports()</text>
+  <text class="mono" x="470" y="177">24,547 files</text>
+  <text class="mono" x="470" y="195">pooled reads, 10.0 s</text>
+
+  <rect class="box" x="676" y="116" width="196" height="94"/>
+  <text class="head" x="690" y="138">provenance</text>
+  <text class="sub"  x="690" y="158">extractRefs()</text>
+  <text class="mono" x="690" y="177">(#12345), fixes #4398</text>
+  <text class="mono" x="690" y="195">cross-repo refs</text>
+
+  <rect class="box" x="896" y="116" width="240" height="94"/>
+  <text class="head" x="910" y="138">FalkorDB writer</text>
+  <text class="sub"  x="910" y="158">load()</text>
+  <text class="mono" x="910" y="177">batched MERGE, 26k edges/s</text>
+  <text class="mono" x="910" y="195">143,488 COUPLED edges</text>
+
+  <path class="l1" d="M212,163 L236,163"/>
+  <path class="l1" d="M432,163 L456,163"/>
+  <path class="l1" d="M652,163 L676,163"/>
+  <path class="l1" d="M872,163 L896,163"/>
+
+  <text class="note" x="44" y="222">Imports are enrichment. If extraction fails the ingest still succeeds — coupling is the product.</text>
+
+  <!-- ============ 2. GRAPH ============ -->
+  <rect class="band" x="24" y="246" width="1132" height="212"/>
+  <text class="bandlbl" x="40" y="268">2 · GRAPH  (the load-bearing engine)</text>
+
+  <rect class="box" x="44" y="282" width="330" height="158"/>
+  <text class="head" x="58" y="304">nodes</text>
+  <text class="mono" x="58" y="326">(:File   {path, ext, dir, changes, bytes})</text>
+  <text class="mono" x="58" y="344">(:Commit {sha, date, message})</text>
+  <text class="mono" x="58" y="362">(:Person {login, name})</text>
+  <text class="mono" x="58" y="380">(:Ticket {key, kind, title, url, explicit})</text>
+  <text class="note" x="58" y="404">58,759 files · 35,757 commits · 3,856 people</text>
+  <text class="note" x="58" y="424">COUPLED stored once per unordered pair</text>
+
+  <rect class="hi" x="398" y="282" width="392" height="158"/>
+  <text class="head" x="412" y="304">the load-bearing edge</text>
+  <text class="mono" x="412" y="326">(a:File)-[:COUPLED {</text>
+  <text class="mono" x="424" y="344">  coChanges, maxConfidence,</text>
+  <text class="mono" x="424" y="362">  hasImport, whyTicket, whyShare,</text>
+  <text class="mono" x="424" y="380">  whySubject }]-&gt;(b:File)</text>
+  <text class="note" x="412" y="404">Computed from commit-set intersection, not imports.</text>
+  <text class="note" x="412" y="424">143,113 of 143,488 (99.7%) have no import path.</text>
+
+  <rect class="box" x="814" y="282" width="322" height="158"/>
+  <text class="head" x="828" y="304">edge types</text>
+  <text class="mono" x="828" y="326">(f)-[:TOUCHED_IN]-&gt;(c)</text>
+  <text class="mono" x="828" y="344">(c)-[:AUTHORED]-&gt;(p)</text>
+  <text class="mono" x="828" y="362">(c)-[:REFERENCES]-&gt;(t)</text>
+  <text class="mono" x="828" y="380">(t)-[:EXPLAINS]-&gt;(f)</text>
+  <text class="mono" x="828" y="398">(a)-[:IMPORTS {via}]-&gt;(b)</text>
+  <text class="note" x="828" y="424">302,034 TOUCHED_IN · 14,401 IMPORTS</text>
+
+  <path class="l3" d="M594,440 L594,470"/>
+
+  <!-- ============ 3. SERVE ============ -->
+  <rect class="band" x="24" y="470" width="1132" height="176"/>
+  <text class="bandlbl" x="40" y="492">3 · SERVE  (every query)</text>
+
+  <rect class="box" x="44" y="506" width="256" height="122"/>
+  <text class="head" x="58" y="528">graph algorithms</text>
+  <text class="sub"  x="58" y="548">run inside the database</text>
+  <text class="mono" x="58" y="568">algo.pageRank   → load-bearing</text>
+  <text class="mono" x="58" y="586">algo.betweenness → bridges</text>
+  <text class="mono" x="58" y="604">algo.WCC        → subsystems</text>
+  <text class="note" x="58" y="622">Pushdown, not post-processing.</text>
+
+  <rect class="hi" x="324" y="506" width="286" height="122"/>
+  <text class="head" x="338" y="528">blast radius</text>
+  <text class="sub"  x="338" y="548">COUPLED*1..1 from each seed</text>
+  <text class="mono" x="338" y="568">weakest-hop confidence</text>
+  <text class="mono" x="338" y="586">concrete nodePath returned</text>
+  <text class="note" x="338" y="608">Certificates arrive with the</text>
+  <text class="note" x="338" y="622">answer, same round trip.</text>
+
+  <rect class="box" x="634" y="506" width="240" height="122"/>
+  <text class="head" x="648" y="528">surfaces</text>
+  <text class="mono" x="648" y="550">POST /api/analyze</text>
+  <text class="mono" x="648" y="568">GET  .../structure</text>
+  <text class="mono" x="648" y="586">GET  .../discoveries</text>
+  <text class="mono" x="648" y="604">MCP · 6 tools</text>
+  <text class="note" x="648" y="622">CLI · GitHub Action · hook</text>
+
+  <rect class="box" x="898" y="506" width="238" height="122"/>
+  <text class="head" x="912" y="528">the answer</text>
+  <text class="mono" x="912" y="550">missed files + why</text>
+  <text class="mono" x="912" y="568">reviewers by affinity</text>
+  <text class="mono" x="912" y="586">blast radius</text>
+  <text class="mono" x="912" y="604">proof of absence</text>
+  <text class="note" x="912" y="622">certificate included</text>
+
+  <path class="l1" d="M172,440 L172,506"/>
+  <path class="l1" d="M467,440 L467,506"/>
+  <path class="l1" d="M754,440 L754,506"/>
+  <path class="l1" d="M1017,440 L1017,506"/>
+
+  <!-- ============ 4. VERIFY ============ -->
+  <rect class="band" x="24" y="662" width="1132" height="150"/>
+  <text class="bandlbl" x="40" y="684">4 · VERIFY  (the reason to trust any of it)</text>
+
+  <rect class="box" x="44" y="698" width="286" height="96"/>
+  <text class="head" x="58" y="720">oracle</text>
+  <text class="sub"  x="58" y="740">recovers couplings from the log</text>
+  <text class="mono" x="58" y="760">no graph · no caching · no shortcuts</text>
+  <text class="note" x="58" y="782">An independent recomputation.</text>
+
+  <rect class="ok" x="354" y="698" width="286" height="96"/>
+  <text class="head" x="368" y="720">diff</text>
+  <text class="mono" x="368" y="740">stored  vs  recomputed</text>
+  <text class="mono" x="368" y="760">precision 1.000 · recall 1.000</text>
+  <text class="note" x="368" y="782">25 / 25 counts recounted exactly</text>
+
+  <rect class="warn" x="664" y="698" width="472" height="96"/>
+  <text class="head" x="678" y="720">what it caught</text>
+  <text class="mono" x="678" y="740">A pair-counting bug stored 93,502 edges where 143,488 existed.</text>
+  <text class="mono" x="678" y="760">The graph passed every smoke test while it was wrong.</text>
+  <text class="note" x="678" y="782">A structural index cannot be wrong about what it extracted, so nothing checks it.</text>
+  <text class="note" x="678" y="790" dy="0">A mined graph can drift — which is why the oracle ships instead of an assertion.</text>
+
+  <path class="l1" d="M330,746 L354,746"/>
+  <path class="l2" d="M640,746 L664,746"/>
+</svg>

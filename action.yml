@@ -1,0 +1,156 @@
+name: Tangle
+description: >-
+  Comment on a pull request when a file strongly coupled to the change is missing
+  from the diff, traced back to the pull request or issue that caused the coupling.
+author: Tangle
+
+branding:
+  icon: git-merge
+  color: purple
+
+inputs:
+  repo:
+    description: owner/name. Defaults to the repository running the workflow.
+    required: false
+    default: ${{ github.repository }}
+  min-confidence:
+    description: Coupling confidence floor, 0.05 to 1.0. Higher means fewer, stronger warnings.
+    required: false
+    default: "0.3"
+  max-hops:
+    description: Coupling hops to traverse, 1 or 2.
+    required: false
+    default: "2"
+  comment:
+    description: Post or update the pull request comment.
+    required: false
+    default: "true"
+  fail-on:
+    description: >-
+      Fail the check when coupled files are missing. Off by default: a failing CI
+      job on a warning is how a useful signal becomes an ignored one.
+    required: false
+    default: "false"
+  tangle-version:
+    description: Tag of tangle to run. Pinned for reproducibility.
+    required: false
+    default: "v1"
+
+outputs:
+  missed:
+    description: Number of coupled files reported as missing from the diff.
+    value: ${{ steps.check.outputs.missed }}
+  status:
+    description: One of ok, findings, unavailable.
+    value: ${{ steps.check.outputs.status }}
+
+runs:
+  using: composite
+  steps:
+    # ---- 1. node ----
+    - name: Set up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+
+    # ---- 2. check out the repository under analysis ----
+    # Needed because the action reads changed files from the local git history
+    # rather than spending GitHub rate limit on the files endpoint.
+    - name: Check out the repository
+      uses: actions/checkout@v4
+      with:
+        # Enough history for the coupling graph to mean something. A shallow
+        # checkout would make Tangle look like it found no couplings at all.
+        fetch-depth: 0
+        persist-credentials: false
+
+    # ---- 3. fetch Tangle ----
+    - name: Fetch Tangle
+      env:
+        TANGLE_TAG: ${{ inputs.tangle-version }}
+      run: |
+        set -euo pipefail
+        mkdir -p "$RUNNER_TEMP/tangle"
+        cd "$RUNNER_TEMP/tangle"
+        # Download the published artifact. Pinned to the tag so a workflow is
+        # reproducible; `latest` is available by setting tangle-version.
+        curl -fsSL "https://codeload.github.com/tangle-dev/tangle/tar.gz/refs/tags/${TANGLE_TAG}" \
+          | tar -xz --strip-components=1
+        npm ci --omit=dev --silent
+        npm run build --silent
+        echo "Tangle ${TANGLE_TAG} ready"
+
+    # ---- 4. start FalkorDB ----
+    - name: Start FalkorDB
+      run: |
+        set -euo pipefail
+        docker run -d --name tangle-falkordb \
+          -p 6379:6379 \
+          falkordb/falkordb:latest
+        # Wait for the port rather than sleeping a fixed amount. A fixed sleep is
+        # the usual cause of a flaky first run.
+        for i in $(seq 1 40); do
+          if docker exec tangle-falkordb redis-cli ping 2>/dev/null | grep -q PONG; then
+            echo "FalkorDB ready"
+            exit 0
+          fi
+          sleep 1
+        done
+        echo "FalkorDB did not become ready in 40s" >&2
+        docker logs tangle-falkordb || true
+        exit 1
+
+    # ---- 5. restore or build the graph ----
+    # The clone of full history is the expensive part, so it is cached on its own.
+    # A cache hit turns a multi-minute ingest into a few seconds, which is what
+    # makes the action viable on every pull request.
+    - name: Cache the history clone
+      uses: actions/cache@v4
+      with:
+        path: tangle-data/repos
+        key: tangle-${{ inputs.repo }}-${{ github.sha }}
+        restore-keys: |
+          tangle-${{ inputs.repo }}-
+
+    - name: Build or reuse the coupling graph
+      id: graph
+      env:
+        REPO: ${{ inputs.repo }}
+        TANGLE_HOME: ${{ runner.temp }}/tangle
+      run: |
+        set -euo pipefail
+        cd "$GITHUB_WORKSPACE"
+        export TANGLE_DATA_DIR="$GITHUB_WORKSPACE/tangle-data"
+        # A fresh graph is ~80s for couplings only; a full graph with static imports
+        # is several minutes and buys the phantom-coupling view. Couplings-only is
+        # the right default for a PR check.
+        node "$TANGLE_HOME/dist/cli.js" ingest --repo "$REPO" --fresh --couplings \
+          || {
+            echo "::warning::Tangle could not build a graph for $REPO. The PR check will report it could not check."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          }
+        echo "ready=true" >> "$GITHUB_OUTPUT"
+
+    # ---- 6. the check ----
+    - name: Check the pull request
+      id: check
+      if: steps.graph.outputs.ready == 'true'
+      env:
+        TANGLE_REPO: ${{ inputs.repo }}
+        TANGLE_PR: ${{ github.event.pull_request.number }}
+        TANGLE_DATA_DIR: ${{ runner.temp }}/tangle
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        INPUT_MIN_CONFIDENCE: ${{ inputs.min-confidence }}
+        INPUT_MAX_HOPS: ${{ inputs.max-hops }}
+        INPUT_COMMENT: ${{ inputs.comment }}
+        INPUT_FAIL_ON: ${{ inputs.fail-on }}
+      run: |
+        set -euo pipefail
+        cd "$GITHUB_WORKSPACE"
+        args=(pr --repo "$TANGLE_REPO" --pr "$TANGLE_PR"
+              --min-confidence "$INPUT_MIN_CONFIDENCE"
+              --max-hops "$INPUT_MAX_HOPS")
+        [ "$INPUT_COMMENT" = "true" ] && args+=(--comment) || args+=(--no-comment)
+        [ "$INPUT_FAIL_ON" = "true" ] && args+=(--fail-on)
+        node "$RUNNER_TEMP/tangle/dist/cli.js" "${args[@]}"

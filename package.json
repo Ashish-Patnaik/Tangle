@@ -1,0 +1,44 @@
+{
+  "name": "tangle",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Change-impact agent that tells you what your change breaks, what you forgot, and proves what it does not touch. FalkorDB is the graph.",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "tangle": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/cli.ts",
+    "cli": "tsx src/cli.ts",
+    "start": "node dist/cli.js",
+    "serve": "tsx src/api/server.ts",
+    "serve:dist": "node dist/api/server.js",
+    "ingest": "tsx src/cli.ts ingest",
+    "analyze": "tsx src/cli.ts analyze",
+    "discover": "tsx src/cli.ts discover",
+    "why": "tsx src/cli.ts why",
+    "check": "tsx src/cli.ts check",
+    "structure": "tsx src/cli.ts structure",
+    "install": "tsx src/cli.ts install",
+    "pr": "tsx src/cli.ts pr",
+    "review": "tsx src/cli.ts review",
+    "stats": "tsx src/cli.ts stats",
+    "verify": "tsx src/cli.ts verify",
+    "backtest": "tsx src/cli.ts backtest",
+    "mcp": "tsx src/mcp/server.ts",
+    "test": "tsx src/cli.ts verify --repo sindresorhus/slugify"
+  },
+  "dependencies": {
+    "falkordb": "^6.8.0",
+    "ioredis": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

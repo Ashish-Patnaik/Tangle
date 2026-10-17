@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tangle | Know what breaks before you merge.</title>
+    <meta
+      name="description"
+      content="Tangle maps your project's hidden connections so you can merge pull requests fearlessly."
+    />
+
+    <!-- Premium playful typography: display serif + script + clean sans/mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/app.css" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+  </head>
+  <body>
+    <!-- ============ LANDING PAGE ============ -->
+    <div id="view-landing">
+      <!-- Nav (Floating Pill, Reacts on scroll) -->
+      <header class="nav" id="main-nav">
+        <div class="nav-inner">
+          <a class="brand" href="#/" data-nav="home">
+            <!-- New Logo -->
+            <img src="/logo.png" alt="Tangle Logo" class="brand-logo" />
+            <span>Tangle</span>
+          </a>
+          <nav class="nav-links">
+            <a href="#features">Product</a>
+            <a href="#proof">The Proof</a>
+            <a href="#lovely-features">Features</a>
+          </nav>
+          <div class="nav-right">
+            <span class="badge">Powered by FalkorDB</span>
+            <a class="btn primary-light" href="#/app" data-nav="app"
+              >Go to Dashboard</a
+            >
+          </div>
+        </div>
+      </header>
+
+      <!-- Hero -->
+      <section class="hero wrap" id="top">
+        <svg
+          class="hero-graph"
+          viewBox="0 0 1200 620"
+          preserveAspectRatio="xMidYMid slice"
+          aria-hidden="true"
+        >
+          <g class="hg-edges">
+            <path
+              class="hg-edge pink"
+              d="M110 120 C 150 180, 190 240, 230 300"
+            />
+            <path
+              class="hg-edge orange"
+              d="M230 300 C 200 370, 175 435, 150 500"
+            />
+            <path
+              class="hg-edge sky"
+              d="M150 500 C 240 525, 335 545, 430 555"
+            />
+            <path
+              class="hg-edge dash yellow"
+              d="M430 555 C 500 525, 570 500, 640 470"
+            />
+            <path
+              class="hg-edge pink"
+              d="M640 470 C 720 495, 800 520, 880 545"
+            />
+            <path
+              class="hg-edge orange"
+              d="M880 545 C 950 515, 1020 490, 1090 460"
+            />
+            <path
+              class="hg-edge dash sky"
+              d="M1090 460 C 1070 415, 1052 368, 1035 320"
+            />
+            <path
+              class="hg-edge yellow"
+              d="M1035 320 C 1070 275, 1100 232, 1130 190"
+            />
+            <path
+              class="hg-edge pink"
+              d="M1130 190 C 1070 150, 1010 115, 950 80"
+            />
+            <path
+              class="hg-edge dash orange"
+              d="M950 80 C 990 160, 1010 240, 1035 320"
+            />
+            <path
+              class="hg-edge dash sky"
+              d="M230 300 C 360 360, 500 420, 640 470"
+            />
+          </g>
+          <g class="hg-nodes">
+            <circle class="hg-node pink" cx="110" cy="120" r="6" />
+            <circle class="hg-node big orange" cx="230" cy="300" r="10" />
+            <circle class="hg-node sky" cx="150" cy="500" r="6" />
+            <circle class="hg-node yellow" cx="430" cy="555" r="9" />
+            <circle class="hg-node pink" cx="640" cy="470" r="6" />
+            <circle class="hg-node big orange" cx="880" cy="545" r="10" />
+            <circle class="hg-node yellow" cx="1090" cy="460" r="9" />
+            <circle class="hg-node big sky" cx="1035" cy="320" r="12" />
+            <circle class="hg-node pink" cx="1130" cy="190" r="6" />
+            <circle class="hg-node orange" cx="950" cy="80" r="6" />
+          </g>
+        </svg>
+
+        <p class="hero-eyebrow">Graph-powered PR intelligence</p>
+        <h1 class="hero-title">
+          Merge any code change <br />
+          <span class="playful-highlight">fearlessly</span>. In one click.
+        </h1>
+        <p class="lede">
+          AI writes code fast, but it doesn't know your repo's hidden rules.
+          Tangle reads your Git history to tell you
+          <strong>exactly what will break</strong> and
+          <strong>what you forgot</strong> before you merge.
+        </p>
+
+        <form id="heroForm" class="magic-search">
+          <div class="input-wrapper">
+            <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20">
+              <path
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <input
+              id="heroInput"
+              type="text"
+              spellcheck="false"
+              autocomplete="off"
+              placeholder="Paste a GitHub Pull Request link..."
+            />
+          </div>
+          <button class="btn primary lg" type="submit">Check my change</button>
+        </form>
+
+        <div class="ask-sub">
+          <span>Or try a live repository:</span>
+          <div id="heroChips" class="chips"></div>
+        </div>
+      </section>
+
+      <!-- Tilted marquee ribbon -->
+      <div class="ribbon" aria-hidden="true">
+        <div class="ribbon-track">
+          <div class="ribbon-group">
+            <span>co-changed 47×</span><span class="sep">✦</span>
+            <span>ships together</span><span class="sep">✦</span>
+            <span>no visible code link</span><span class="sep">✦</span>
+            <span>hidden coupling found</span><span class="sep">✦</span>
+            <span>blast radius mapped</span><span class="sep">✦</span>
+            <span>proof, not guesses</span><span class="sep">✦</span>
+            <span>reviewer auto-routed</span><span class="sep">✦</span>
+            <span>212ms median scan</span><span class="sep">✦</span>
+          </div>
+          <div class="ribbon-group">
+            <span>co-changed 47×</span><span class="sep">✦</span>
+            <span>ships together</span><span class="sep">✦</span>
+            <span>no visible code link</span><span class="sep">✦</span>
+            <span>hidden coupling found</span><span class="sep">✦</span>
+            <span>blast radius mapped</span><span class="sep">✦</span>
+            <span>proof, not guesses</span><span class="sep">✦</span>
+            <span>reviewer auto-routed</span><span class="sep">✦</span>
+            <span>212ms median scan</span><span class="sep">✦</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bright Warm Band -->
+      <section class="band">
+        <div class="wrap band-inner">
+          <p class="band-cap">
+            Mapping hidden dependencies on world-class repositories
+          </p>
+          <div class="wm-row">
+            <span class="wm mono">next.js</span>
+            <span class="wm serif">kubernetes</span>
+            <span class="wm black">tensorflow</span>
+            <span class="wm script">homebrew</span>
+            <span class="wm wide">CHROMIUM</span>
+            <span class="wm mono">rust</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Guess vs Proof comparison -->
+      <section class="compare wrap" id="how">
+        <h2 class="section-title">
+          Stop guessing.<br />Start <em class="squig">proving</em>.
+        </h2>
+        <p class="lede">
+          Semantic search tells you files <em>feel</em> related. Tangle checks
+          every historical commit pair in your repo and shows the receipts.
+        </p>
+        <div class="cmp-row">
+          <div class="cmp-card paper">
+            <span class="cmp-label">Vector RAG search</span>
+            <b class="cmp-big muted">“seems related…”</b>
+            <p>
+              Embedding similarity. No history, no confidence, no proof. Hope it
+              doesn't break prod.
+            </p>
+          </div>
+          <!-- Sunlight Yellow Card -->
+          <div class="cmp-card sunlight-card">
+            <span class="cmp-label dark">Tangle + FalkorDB</span>
+            <b class="cmp-big">co-changed 47×</b>
+            <p class="mono-sub">93,502 historical links checked in 212ms</p>
+            <span class="verdict-pill">✓ Clear to merge — proof attached</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vibrant Gradient "made for" section (RESTORED) -->
+      <section class="wrap">
+        <div class="vibrant-card made-for">
+          <div class="mf-left">
+            <h2 class="vibrant-title">Made for the way <em>you</em> merge</h2>
+            <p class="vibrant-sub">
+              Pick your chaos. Tangle has already mapped it.
+            </p>
+            <div class="pill-row">
+              <span class="pill">Monorepos</span>
+              <span class="pill">Microservices</span>
+              <span class="pill">Shared configs</span>
+              <span class="pill">CI workflows</span>
+              <span class="pill">Migrations</span>
+              <span class="pill">Feature flags</span>
+              <span class="pill">Infra as code</span>
+              <span class="pill">Generated code</span>
+              <span class="pill">Lockfiles</span>
+            </div>
+          </div>
+          <div class="mf-right">
+            <h3>One graph. Every hidden rule.</h3>
+            <p>
+              Whether you're touching a router, a workflow, or a forgotten
+              locale file — Tangle adapts to how your repo actually evolves, not
+              how it's documented.
+            </p>
+            <a class="btn primary-light lg" href="#/app" data-nav="app"
+              >Try it on your code</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Features -->
+      <section class="features wrap" id="features">
+        <div class="feature-grid">
+          <div class="feature-card">
+            <span class="f-num">01</span>
+            <div class="icon-box skyblue">⚡</div>
+            <h3>The Ripple Effect</h3>
+            <p>
+              See exactly which files usually change when you touch this code,
+              ranked by risk. No more surprise bugs in production.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="f-num">02</span>
+            <div class="icon-box pink">👻</div>
+            <h3>Hidden Connections</h3>
+            <p>
+              Did you forget a config file? Tangle catches files that always
+              ship together but have no visible code connection.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="f-num">03</span>
+            <div class="icon-box yellow">🎯</div>
+            <h3>Smart Routing</h3>
+            <p>
+              Find the right reviewer instantly. We route your PR to the person
+              who actually owns the history of the affected files.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Showcase rows -->
+      <section class="showcase wrap">
+        <div class="show-row">
+          <!-- Sky Blue Diagram Box -->
+          <div class="show-visual sky-box">
+            <svg viewBox="0 0 400 260" aria-hidden="true">
+              <g stroke="rgba(26,21,20, 0.4)" fill="none" stroke-width="2">
+                <path d="M200 130 L110 70" />
+                <path d="M200 130 L300 80" />
+                <path d="M200 130 L90 190" />
+                <path d="M200 130 L310 195" />
+              </g>
+              <circle
+                cx="200"
+                cy="130"
+                r="16"
+                fill="#FFD166"
+                stroke="#1A1514"
+                stroke-width="3"
+              />
+              <circle
+                cx="110"
+                cy="70"
+                r="9"
+                fill="#FFF"
+                stroke="#1A1514"
+                stroke-width="2"
+              />
+              <circle
+                cx="300"
+                cy="80"
+                r="7"
+                fill="#FFF"
+                stroke="#1A1514"
+                stroke-width="2"
+              />
+              <circle
+                cx="90"
+                cy="190"
+                r="8"
+                fill="#FFF"
+                stroke="#1A1514"
+                stroke-width="2"
+              />
+              <circle
+                cx="310"
+                cy="195"
+                r="6"
+                fill="#FFF"
+                stroke="#1A1514"
+                stroke-width="2"
+              />
+              <text x="200" y="168" class="svg-mono" text-anchor="middle">
+                src/router/core.ts
+              </text>
+              <text x="300" y="62" class="svg-mono" text-anchor="middle">
+                deploy.yml
+              </text>
+            </svg>
+          </div>
+          <div class="show-copy">
+            <h3>Blast radius, ranked by real risk.</h3>
+            <p>
+              Every touched file scores by how often it historically co-changed
+              with your edit — with the commit receipts to back it up.
+              Thresholds are yours to set.
+            </p>
+            <div class="btn-row">
+              <a class="btn primary" href="#/app" data-nav="app">Run a scan</a>
+              <a class="btn ghost" href="#proof">See the proof</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="show-row rev">
+          <div class="show-visual paper">
+            <div class="mock-row">
+              <span class="avatar a1">DA</span>
+              <div class="mock-body">
+                <b>@dana</b>
+                <div class="meter-bg">
+                  <div class="meter-fill" style="width: 82%"></div>
+                </div>
+              </div>
+              <span class="mock-pct">82%</span>
+            </div>
+            <div class="mock-row">
+              <span class="avatar a2">MK</span>
+              <div class="mock-body">
+                <b>@mik</b>
+                <div class="meter-bg">
+                  <div class="meter-fill" style="width: 54%"></div>
+                </div>
+              </div>
+              <span class="mock-pct">54%</span>
+            </div>
+            <div class="mock-row">
+              <span class="avatar a3">JO</span>
+              <div class="mock-body">
+                <b>@jo</b>
+                <div class="meter-bg">
+                  <div class="meter-fill" style="width: 31%"></div>
+                </div>
+              </div>
+              <span class="mock-pct">31%</span>
+            </div>
+          </div>
+          <div class="show-copy">
+            <h3>Reviewers who actually own the history.</h3>
+            <p>
+              Not commit counts — ownership. Tangle ranks reviewers by how much
+              of the affected blast radius they've personally touched before.
+            </p>
+            <div class="btn-row">
+              <a class="btn ghost" href="#/app" data-nav="app">Route my PR</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Proof Section -->
+      <section class="proof-section wrap" id="proof">
+        <div class="proof-card">
+          <div class="proof-content">
+            <h2 class="serif-title">
+              Vector RAG guesses.<br />Tangle <em>proves it.</em>
+            </h2>
+            <!-- Highlighted FalkorDB Text -->
+            <p>
+              Other tools use semantic search to guess connections. Tangle uses
+              <strong class="hl-falkor">FalkorDB</strong> to map millions of
+              historical commits and mathematically prove what your change
+              touches. If it's safe, we give you the exact math showing why.
+            </p>
+            <a class="btn primary-light" href="#/app" data-nav="app"
+              >Try it on your code →</a
+            >
+          </div>
+          <div class="proof-visual">
+            <div class="visual-box">
+              <div class="v-header">Verified Impact Analysis</div>
+              <div class="v-row">
+                <span>Files inside repo</span> <b>58,759</b>
+              </div>
+              <div class="v-row">
+                <span>Historical links checked</span> <b>93,502</b>
+              </div>
+              <div class="v-row">
+                <span>Verdict</span> <b class="text-green">Clear to merge</b>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Lovely Features (formerly Wall of Love) -->
+      <section class="love wrap" id="lovely-features">
+        <h2 class="section-title">
+          Here are lovely features of <em class="squig">Tangle</em>
+        </h2>
+        <div class="love-grid">
+          <div class="love-card">
+            <p>
+              “Finds the hidden, phantom links that no compiler or standard
+              search tool can ever see.”
+            </p>
+            <footer><span class="avatar a1">🔍</span> Hidden Couplings</footer>
+          </div>
+          <div class="love-card">
+            <p>
+              “Ranks your reviewers based on who actually knows the affected
+              code, avoiding blind PR assignments.”
+            </p>
+            <footer><span class="avatar a2">🎯</span> Smart Routing</footer>
+          </div>
+          <div class="love-card">
+            <p>
+              “Mathematically proves your change is safe to merge, complete with
+              exact search bounds.”
+            </p>
+            <footer><span class="avatar a3">🛡️</span> Verifiable Proof</footer>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta">
+        <h2>Start merging<br /><em class="script-accent">fearlessly</em>.</h2>
+        <p class="lede light">
+          Paste a PR. Get the blast radius, the missing files, and the reviewer
+          — in one click.
+        </p>
+        <div class="btn-row center">
+          <a class="btn primary-light lg" href="#/app" data-nav="app"
+            >Go to Dashboard</a
+          >
+          <a class="btn ghost-light lg" href="#top">Paste a PR link</a>
+        </div>
+        <p class="mono-note">
+          Free for open source · No credit card · 212ms median scan
+        </p>
+      </section>
+
+      <footer class="footer">
+        <div class="wrap foot-grid">
+          <div>
+            <h4>Product</h4>
+            <a href="#features">Blast radius</a>
+            <a href="#lovely-features">Hidden couplings</a>
+            <a href="#features">Reviewer routing</a>
+            <a href="#proof">The Math</a>
+          </div>
+          <div>
+            <h4>Resources</h4>
+            <a href="#how">How it works</a>
+            <a href="#/app" data-nav="app">Live dashboard</a>
+            <a
+              href="https://docs.falkordb.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >FalkorDB docs</a
+            >
+            <a
+              href="https://www.wemakedevs.org/hackathons/falkordb"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Graph Hacks</a
+            >
+          </div>
+        </div>
+
+        <!-- Big title moved to the bottom -->
+        <div class="foot-mark" aria-hidden="true">
+          <span class="foot-word">Tangle</span>
+        </div>
+
+        <div class="wrap foot-bottom">
+          <div class="brand">
+            <!-- New Logo -->
+            <img src="/logo.png" alt="Tangle Logo" class="brand-logo" />
+            Tangle
+          </div>
+          <p>Built for Graph Hacks: Context for AI Agents · WeMakeDevs × FalkorDB</p>
+          <span class="badge">Powered by FalkorDB</span>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ============ DASHBOARD (APP) ============ -->
+    <div id="view-app" hidden>
+      <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <a class="back-link" href="#/" data-nav="home">← Back to Site</a>
+
+          <div class="side-group">
+            <label>Repository</label>
+            <p id="repoBlurb" class="side-help">Auto-detected from the PR link. Any public GitHub repo is ingested on demand.</p>
+          </div>
+
+          <div id="sideStats" class="side-stats"></div>
+
+          <div class="side-group ui-panel">
+            <label class="serif-label">Strictness Engine</label>
+            <div class="slider-box">
+              <div class="slider-row">
+                <span>Confidence Floor</span
+                ><output id="confOut" class="mono">30%</output>
+              </div>
+              <input
+                id="conf"
+                type="range"
+                min="5"
+                max="90"
+                value="5"
+                class="ui-slider"
+              />
+              <div class="slider-row" style="margin-top: 16px">
+                <span>Search Depth</span
+                ><output id="hopsOut" class="mono">2 steps</output>
+              </div>
+              <input
+                id="hops"
+                type="range"
+                min="1"
+                max="3"
+                value="2"
+                class="ui-slider"
+              />
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+          <div class="input-panel ui-panel">
+            <label>Analyze a Pull Request</label>
+            <div class="input-row">
+              <input
+                id="input"
+                class="ui-input"
+                type="text"
+                placeholder="e.g. https://github.com/vercel/next.js/pull/12345"
+              />
+              <button id="go" class="btn primary">Run Analysis</button>
+            </div>
+            <div id="examples" class="chips left"></div>
+            <div id="status" class="status-text">
+              Ready. Paste a link to begin.
+            </div>
+          </div>
+
+          <!-- Summary Cards (Color strips removed in CSS) -->
+          <div id="riskPanel" class="ui-panel" hidden></div>
+
+          <div id="summary" class="summary-grid" hidden>
+            <div class="sum-card">
+              <span class="sum-label">Files Changed</span
+              ><b id="sumChanged" class="sum-val">–</b>
+            </div>
+            <div class="sum-card risk">
+              <span class="sum-label">Might Break</span
+              ><b id="sumRisk" class="sum-val">–</b>
+            </div>
+            <div class="sum-card forgot">
+              <span class="sum-label">You Forgot</span
+              ><b id="sumMissed" class="sum-val">–</b>
+            </div>
+            <div class="sum-card safe">
+              <span class="sum-label">Time Taken</span
+              ><b id="sumMs" class="sum-val">–</b>
+            </div>
+          </div>
+
+          <!-- Results Tabs -->
+          <div id="results" class="results-area" hidden>
+            <nav class="ui-tabs">
+              <button class="ui-tab active" data-tab="risk">Might Break</button>
+              <button class="ui-tab" data-tab="forgot">You Forgot</button>
+              <button class="ui-tab" data-tab="map">Dependency Map</button>
+              <button class="ui-tab" data-tab="checked">
+                The Math (Proof)
+              </button>
+              <button class="ui-tab" data-tab="links">Repo Secrets</button>
+            </nav>
+
+            <div class="tab-content ui-panel">
+              <!-- Tab 1: Risk -->
+              <div class="tab-body" data-panel="risk">
+                <div class="two-col">
+                  <div class="col">
+                    <h3>
+                      Affected files
+                      <span id="radiusCount" class="count-badge"></span>
+                    </h3>
+                    <div id="radiusList" class="data-list"></div>
+                  </div>
+                  <div class="col">
+                    <h3>Suggested Reviewers</h3>
+                    <p class="sub-hint">
+                      Ranked by history ownership, not total commits.
+                    </p>
+                    <div id="reviewerList" class="data-list"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 2: Forgot -->
+              <div class="tab-body" data-panel="forgot" hidden>
+                <div id="missedIntro" class="alert-box"></div>
+                <div id="missedList" class="data-list"></div>
+              </div>
+
+              <!-- Tab 3: Map -->
+              <div class="tab-body" data-panel="map" hidden>
+                <div id="graphWrap" class="canvas-wrap">
+                  <canvas id="graph"></canvas>
+                  <div class="graph-legend">
+                    <span><i class="dot orange"></i> You Changed</span>
+                    <span><i class="dot pink"></i> Might Break</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 4: Checked -->
+              <div class="tab-body" data-panel="checked" hidden>
+                <div id="certificate" class="certificate-box"></div>
+                <details class="code-details">
+                  <summary>Show exact Graph Query (FalkorDB)</summary>
+                  <div id="cypherList"></div>
+                </details>
+              </div>
+
+              <!-- Tab 5: Links -->
+              <div class="tab-body" data-panel="links" hidden>
+                <div class="flex-head">
+                  <div>
+                    <h3>Hidden Couplings</h3>
+                    <p class="sub-hint">
+                      Files that ship together but have no code connecting them.
+                    </p>
+                  </div>
+                  <div id="discoverMeta" class="mono-meta"></div>
+                </div>
+                <div id="discoverList" class="data-list"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div id="emptyDash" class="empty-state">
+            <svg
+              viewBox="0 0 24 24"
+              width="48"
+              height="48"
+              stroke="var(--text-muted)"
+              stroke-width="1.5"
+              fill="none"
+            >
+              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <h2>Awaiting Instructions</h2>
+            <p>
+              Pick a project, set your strictness, and paste a PR link to map
+              the blast radius.
+            </p>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="toast" class="toast-msg" hidden></div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
