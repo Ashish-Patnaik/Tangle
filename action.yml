@@ -74,7 +74,7 @@ runs:
         cd "$RUNNER_TEMP/tangle"
         # Download the published artifact. Pinned to the tag so a workflow is
         # reproducible; `latest` is available by setting tangle-version.
-        curl -fsSL "https://codeload.github.com/tangle-dev/tangle/tar.gz/refs/tags/${TANGLE_TAG}" \
+        curl -fsSL "https://codeload.github.com/Ashish-Patnaik/Tangle/tar.gz/refs/tags/${TANGLE_TAG}" \
           | tar -xz --strip-components=1
         npm ci --omit=dev --silent
         npm run build --silent
