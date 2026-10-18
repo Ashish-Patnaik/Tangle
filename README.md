@@ -61,6 +61,7 @@ trains people to disable it, which is the usual way an agent check dies.
 See Tangle in action—from mining Next.js commit history into FalkorDB and finding phantom couplings, to running the live Claude Code self-correction hook:
 
 * **🚀 Live App:** [https://tangle-phi.vercel.app/](https://tangle-phi.vercel.app/) *(Powered by Vercel + Render + FalkorDB Cloud)*
+> ⚠️ **Note:** The loading time and response time will be slow because the application is hosted on a free tier.
 * **🎥 Video Walkthrough (YouTube):** [Watch the 3-Minute Demo](https://youtu.be/gUe0mkcUsl4?si=mhvaXtBCHvSAf4am)
 * **📖 Technical Blog Post (Dev.to):** [Tangle: A Code Coupling Graph That Finds the Files Your PR Forgot](https://dev.to/ashish_patnaik/tangle-a-code-coupling-graph-that-finds-the-files-your-pr-forgot-561p)
 
