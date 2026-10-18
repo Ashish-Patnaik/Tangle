@@ -128,8 +128,8 @@ ${bold("GLOBAL")}
 ${bold("QUICKSTART")}
   npm run ingest -- --repo vercel/next.js     # build the graph once
   npm run check -- --repo vercel/next.js --files packages/next/server.ts
-  npx tangle install --write                  # wire up your agent
-  npx tangle pr --repo owner/name --pr 1234   # the GitHub Action, by hand
+  tangle install --write                      # wire up your agent (after npm link)
+  tangle pr --repo owner/name --pr 1234       # the GitHub Action, by hand
 
 ${bold("EXAMPLES")}
   npm run ingest  -- --repo vercel/next.js --fresh

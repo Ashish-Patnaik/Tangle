@@ -33,7 +33,7 @@
           </a>
           <nav class="nav-links">
             <a href="#features">Product</a>
-            <a href="#proof">The Proof</a>
+            <a href="#proof">The Bounds</a>
             <a href="#lovely-features">Features</a>
           </nav>
           <div class="nav-right">
@@ -163,9 +163,9 @@
             <span>no visible code link</span><span class="sep">✦</span>
             <span>hidden coupling found</span><span class="sep">✦</span>
             <span>blast radius mapped</span><span class="sep">✦</span>
-            <span>proof, not guesses</span><span class="sep">✦</span>
+            <span>bounds, not guesses</span><span class="sep">✦</span>
             <span>reviewer auto-routed</span><span class="sep">✦</span>
-            <span>212ms median scan</span><span class="sep">✦</span>
+            <span>bounded, not proven</span><span class="sep">✦</span>
           </div>
           <div class="ribbon-group">
             <span>co-changed 47×</span><span class="sep">✦</span>
@@ -173,9 +173,9 @@
             <span>no visible code link</span><span class="sep">✦</span>
             <span>hidden coupling found</span><span class="sep">✦</span>
             <span>blast radius mapped</span><span class="sep">✦</span>
-            <span>proof, not guesses</span><span class="sep">✦</span>
+            <span>bounds, not guesses</span><span class="sep">✦</span>
             <span>reviewer auto-routed</span><span class="sep">✦</span>
-            <span>212ms median scan</span><span class="sep">✦</span>
+            <span>bounded, not proven</span><span class="sep">✦</span>
           </div>
         </div>
       </div>
@@ -188,8 +188,6 @@
           </p>
           <div class="wm-row">
             <span class="wm mono">next.js</span>
-            <span class="wm serif">kubernetes</span>
-            <span class="wm black">tensorflow</span>
             <span class="wm script">homebrew</span>
             <span class="wm wide">CHROMIUM</span>
             <span class="wm mono">rust</span>
@@ -219,8 +217,8 @@
           <div class="cmp-card sunlight-card">
             <span class="cmp-label dark">Tangle + FalkorDB</span>
             <b class="cmp-big">co-changed 47×</b>
-            <p class="mono-sub">93,502 historical links checked in 212ms</p>
-            <span class="verdict-pill">✓ Clear to merge — proof attached</span>
+            <p class="mono-sub">143,488 historical links checked</p>
+            <span class="verdict-pill">✓ Clean within bounds — not proof</span>
           </div>
         </div>
       </section>
@@ -361,7 +359,7 @@
             </p>
             <div class="btn-row">
               <a class="btn primary" href="#/app" data-nav="app">Run a scan</a>
-              <a class="btn ghost" href="#proof">See the proof</a>
+              <a class="btn ghost" href="#proof">See the bounds</a>
             </div>
           </div>
         </div>
@@ -423,8 +421,9 @@
             <p>
               Other tools use semantic search to guess connections. Tangle uses
               <strong class="hl-falkor">FalkorDB</strong> to map millions of
-              historical commits and mathematically prove what your change
-              touches. If it's safe, we give you the exact math showing why.
+              historical commits and state exactly how much of the graph it
+              searched to reach its answer. If it's clean, we show the bounds that
+              claim rests on.
             </p>
             <a class="btn primary-light" href="#/app" data-nav="app"
               >Try it on your code →</a
@@ -437,10 +436,10 @@
                 <span>Files inside repo</span> <b>58,759</b>
               </div>
               <div class="v-row">
-                <span>Historical links checked</span> <b>93,502</b>
+                <span>Historical links checked</span> <b>143,488</b>
               </div>
               <div class="v-row">
-                <span>Verdict</span> <b class="text-green">Clear to merge</b>
+                <span>Verdict</span> <b class="text-green">Clean — bounded</b>
               </div>
             </div>
           </div>
@@ -469,10 +468,10 @@
           </div>
           <div class="love-card">
             <p>
-              “Mathematically proves your change is safe to merge, complete with
-              exact search bounds.”
+              “States exactly how far it searched to call your change clean,
+              with the exact search bounds — bounded, not proven.”
             </p>
-            <footer><span class="avatar a3">🛡️</span> Verifiable Proof</footer>
+            <footer><span class="avatar a3">🛡️</span> Verifiable Bounds</footer>
           </div>
         </div>
       </section>
@@ -491,7 +490,7 @@
           <a class="btn ghost-light lg" href="#top">Paste a PR link</a>
         </div>
         <p class="mono-note">
-          Free for open source · No credit card · 212ms median scan
+          Free for open source · No credit card · bounded, not proven
         </p>
       </section>
 
@@ -633,7 +632,7 @@
               <button class="ui-tab" data-tab="forgot">You Forgot</button>
               <button class="ui-tab" data-tab="map">Dependency Map</button>
               <button class="ui-tab" data-tab="checked">
-                The Math (Proof)
+                The Math (Bounds)
               </button>
               <button class="ui-tab" data-tab="links">Repo Secrets</button>
             </nav>

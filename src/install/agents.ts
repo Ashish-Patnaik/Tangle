@@ -149,19 +149,20 @@ export const AGENTS: AgentSpec[] = [
 /**
  * How to launch the MCP server.
  *
- * `npx` is used rather than a global install so there is no version drift between
- * what the user tested and what the agent runs. `--yes` and the explicit package
- * name mean a first run does not stop on an interactive prompt inside an agent,
- * which is the single most common way an MCP server ends up silently broken.
+ * This repository is `"private": true` and is not published to npm, so `npx
+ * tangle` does not run this project. `npm view tangle` resolves to an unrelated
+ * package (stateful/tangle), and `tangle-mcp` is a 404. A config that shells out
+ * through npx therefore either launches someone else's package or fails at agent
+ * start-up with an error that never mentions Tangle.
+ *
+ * The config invokes `tangle` directly and relies on the binary being on PATH.
+ * `npm link` after `npm run build` puts it there (`npm link` symlinks the local
+ * package's `bin` into the global prefix). If this is ever published under a name
+ * we own, pass that name back in via `serverCommand(name)` - do not route it
+ * through npx.
  */
-// The package is `tangle` (see package.json `name`). It used to default to
-// "tangle-mcp", which does not exist on npm - verified with `npm view`, which
-// returns 404. Every config written by that default pointed at a package that
-// could not resolve, and npx then fails at agent start-up with an error that
-// says nothing about Tangle. Any agent config written before this fix needs its
-// "args" line changed from `tangle-mcp` to `tangle`.
 export function serverCommand(pkg = "tangle"): { command: string; args: string[] } {
-  return { command: "npx", args: ["--yes", pkg, "--mcp"] };
+  return { command: pkg, args: ["--mcp"] };
 }
 
 /** The JSON snippet for one agent, ready to paste. */
@@ -194,7 +195,7 @@ export interface InstallOptions {
   agents: AgentId[];
   /** Also install the Claude Code post-edit hook. */
   hook: boolean;
-  /** Override the package name launched by npx. */
+  /** Override the executable the agent launches (default `tangle`). */
   packageName?: string;
   /** Root for project-scoped configs. */
   cwd: string;
@@ -331,6 +332,10 @@ export function installForAgent(agent: AgentSpec, opts: InstallOptions): Install
  *
  * The command prints nothing and exits 0 when the diff is clean, which is what
  * keeps it quiet.
+ *
+ * The command assumes `tangle` is on PATH, which `npm link` (after `npm run
+ * build`) provides. The installer cannot fall back to `npx tangle` because the
+ * name belongs to an unrelated package on the public registry.
  */
 export const HOOK_COMMAND = "tangle hook check";
 
@@ -473,7 +478,7 @@ export function installHook(opts: InstallOptions): HookInstall {
 export function nextSteps(pkg = "tangle"): string[] {
   return [
     `1. Make sure FalkorDB is running:  docker compose up -d`,
-    `2. Ingest the repo you work in:    npx --yes ${pkg} ingest --repo owner/name`,
+    `2. Ingest the repo you work in:    ${pkg} ingest --repo owner/name`,
     `3. Restart the agent so it picks up the MCP server.`,
     `4. Ask it: "check my changed files against the coupling graph".`,
   ];

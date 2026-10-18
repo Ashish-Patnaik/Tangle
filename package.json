@@ -23,7 +23,7 @@
     "why": "tsx src/cli.ts why",
     "check": "tsx src/cli.ts check",
     "structure": "tsx src/cli.ts structure",
-    "install": "tsx src/cli.ts install",
+    "setup": "tsx src/cli.ts install",
     "pr": "tsx src/cli.ts pr",
     "review": "tsx src/cli.ts review",
     "stats": "tsx src/cli.ts stats",

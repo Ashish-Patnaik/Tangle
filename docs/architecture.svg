@@ -34,7 +34,7 @@
 
   <!-- ============ 1. INGEST ============ -->
   <rect class="band" x="24" y="80" width="1132" height="150"/>
-  <text class="bandlbl" x="40" y="102">1 · INGEST  (once per repo, ~124 s on next.js)</text>
+  <text class="bandlbl" x="40" y="102">1 · INGEST  (once per repo, ~90 s couplings-only, ~2 min full)</text>
 
   <rect class="box" x="44" y="116" width="168" height="94"/>
   <text class="head" x="58" y="138">git history</text>

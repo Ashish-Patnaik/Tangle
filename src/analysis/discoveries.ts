@@ -101,7 +101,7 @@ export function isArtifactPath(path: string): boolean {
  * Three implementations are kept on purpose:
  *
  *   1. `unlinkedPairsQuery(1)` — `NOT (a)-[:IMPORTS]-(b)`, a live graph
- *      predicate. Measured at 746 ms on 93,502 coupling edges. Source of truth.
+ *      predicate. Measured at 746 ms on 143,488 coupling edges. Source of truth.
  *   2. `UNLINKED_PAIRS_EXISTS` — the same idea as a `NOT EXISTS { }` subquery.
  *      Does not parse on this build; kept so a newer server can be detected.
  *   3. `UNLINKED_PAIRS_FLAG` — reads the `hasImport` marker precomputed at ingest

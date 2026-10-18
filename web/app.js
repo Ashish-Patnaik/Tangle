@@ -280,7 +280,7 @@ function renderRisk(res) {
   
   const rList = $("#radiusList");
   if (res.blastRadius.length === 0) {
-    rList.innerHTML = `<div class="data-row"><span class="row-badge" style="background:#E6FFF0;color:#008A50;">SAFE</span><div><div class="row-path">Clear to merge.</div><div class="row-meta">Nothing crosses your strictness threshold. See 'The Math' for proof.</div></div></div>`;
+    rList.innerHTML = `<div class="data-row"><span class="row-badge" style="background:#E6FFF0;color:#008A50;">SAFE</span><div><div class="row-path">Clean within bounds.</div><div class="row-meta">Nothing crosses your strictness threshold inside the searched bounds. See 'The Math' for the limits.</div></div></div>`;
   } else {
     rList.innerHTML = res.blastRadius.slice(0, 60).map((f) => {
       const isWarn = f.confidence >= 0.5;

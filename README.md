@@ -11,7 +11,7 @@
     <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
     <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/MCP-Ready-34d399?style=for-the-badge" alt="MCP Ready" /></a>
     <a href="https://tangle-phi.vercel.app/"><img src="https://img.shields.io/badge/Live_Demo-Vercel-%23000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
-    <a href="https://youtu.be/gUe0mkcUsl4?si=RTT2xEhrGZzdCVM_"><img src="https://img.shields.io/badge/Video_Demo-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube Demo" /></a>
+    <a href="https://youtu.be/gUe0mkcUsl4?si=mhvaXtBCHvSAf4am"><img src="https://img.shields.io/badge/Video_Demo-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube Demo" /></a>
     <a href="https://dev.to/ashish_patnaik/tangle-a-code-coupling-graph-that-finds-the-files-your-pr-forgot-561p"><img src="https://img.shields.io/badge/Blog_Post-Dev.to-%230A0A0A?style=for-the-badge&logo=devdotto&logoColor=white" alt="Blog Post" /></a>
   </p>
 </div>
@@ -48,7 +48,7 @@ This is the part that matters, and it is the part a screenshot of a dashboard do
 ```
 
 ```bash
-npx tangle install --write --hook    # one command, seven agents wired
+tangle install --write --hook    # one command, eight agents wired
 ```
 
 The hook stays silent when there is nothing to say. A check that speaks up on every edit
@@ -61,21 +61,26 @@ trains people to disable it, which is the usual way an agent check dies.
 See Tangle in action—from mining Next.js commit history into FalkorDB and finding phantom couplings, to running the live Claude Code self-correction hook:
 
 * **🚀 Live App:** [https://tangle-phi.vercel.app/](https://tangle-phi.vercel.app/) *(Powered by Vercel + Render + FalkorDB Cloud)*
-* **🎥 Video Walkthrough (YouTube):** [Watch the 3-Minute Demo](https://youtu.be/gUe0mkcUsl4?si=RTT2xEhrGZzdCVM_)
+* **🎥 Video Walkthrough (YouTube):** [Watch the 3-Minute Demo](https://youtu.be/gUe0mkcUsl4?si=mhvaXtBCHvSAf4am)
 * **📖 Technical Blog Post (Dev.to):** [Tangle: A Code Coupling Graph That Finds the Files Your PR Forgot](https://dev.to/ashish_patnaik/tangle-a-code-coupling-graph-that-finds-the-files-your-pr-forgot-561p)
 
 ---
 
 ## ⚡ Quickstart
 
-Three commands, from nothing to a working check.
+From nothing to a working check:
 
 ```bash
 git clone https://github.com/Ashish-Patnaik/Tangle.git && cd Tangle
 npm install
+npm run build && npm link                 # puts `tangle` on PATH for the agent
 docker compose up -d                       # FalkorDB on :6379
-npm run ingest -- --repo vercel/next.js   # ~90s, couplings only
+npm run ingest -- --repo vercel/next.js --couplings   # ~90s couplings-only, ~2 min full
 ```
+
+> `npm link` is what makes `tangle` (the CLI and the MCP server the agent launches)
+> resolvable. This package is `"private": true` and is not on npm, so `npx tangle`
+> would fetch an unrelated package. Build and link it locally instead.
 
 Then ask it about any change:
 
@@ -101,12 +106,12 @@ That last line is not decoration. It is on **every** verdict, including the clea
 ### Wire it into your agent
 
 ```bash
-npx tangle install                  # prints the config for every supported agent
-npx tangle install --write          # applies it, backing up anything it changes
-npx tangle install --write --hook   # …and runs the check after every edit
+tangle install                  # prints the config for every supported agent
+tangle install --write          # applies it, backing up anything it changes
+tangle install --write --hook   # …and runs the check after every edit
 ```
 
-Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, Codex CLI and Gemini CLI, in one command. `install` writes nothing without `--write`, is idempotent, preserves other MCP servers and any settings you have, and **refuses rather than overwrites** if a config file is not valid JSON.
+Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, Codex CLI, Gemini CLI and OpenCode, in one command. `install` writes nothing without `--write`, is idempotent, preserves other MCP servers and any settings you have, and **refuses rather than overwrites** if a config file is not valid JSON.
 
 <details>
 <summary>Or wire it up by hand</summary>
@@ -114,12 +119,12 @@ Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, Codex CLI and Gemini CLI
 ```json
 {
   "mcpServers": {
-    "tangle": { "command": "npx", "args": ["--yes", "tangle", "--mcp"] }
+    "tangle": { "command": "tangle", "args": ["--mcp"] }
   }
 }
 ```
 
-Claude Code and Cursor use `mcpServers`, VS Code uses `servers`, Codex uses TOML.
+Claude Code and Cursor use `mcpServers`, VS Code uses `servers`, OpenCode uses `mcp`, Codex uses TOML. The command assumes `tangle` is on PATH (`npm link` after `npm run build`); there is no npx fallback because the `tangle` package name belongs to an unrelated project on npm.
 
 </details>
 
@@ -260,7 +265,7 @@ npm install
 npm run ingest -- --repo vercel/next.js --fresh
 ```
 
-> *(Note: Ingesting a massive repo like `vercel/next.js` takes ~6 minutes to build the AST import graph and temporal coupling matrix from Git history.)*
+> *(Note: Ingesting a massive repo like `vercel/next.js` takes ~90s couplings-only, ~2 min full — the full graph also builds the AST import graph and temporal coupling matrix from Git history.)*
 
 ### 4. Run the Web UI
 
@@ -277,7 +282,7 @@ Go to **[http://localhost:8787](http://localhost:8787)** to use the sleek SaaS i
 Tangle is designed to be a drop-in tool for Autonomous AI Agents. It includes a standard **Model Context Protocol (MCP)** server so any LLM (Claude, Cursor, etc.) can query the graph before writing code.
 
 ```bash
-npm run install -- --write   # or: npx tangle install --write
+npm run setup -- --write   # or: tangle install --write
 ```
 
 **One primary tool.** An agent choosing between twenty options does not choose well, and a 200-line JSON blob is worse than a paragraph it can act on. `tangle_check` returns a short verdict; the rest exist to be called *after* it says there is something to look at.
@@ -289,6 +294,7 @@ npm run install -- --write   # or: npx tangle install --write
 | `tangle_why` | "Why are these two files coupled?" — the PR or issue behind it. |
 | `tangle_tickets` | Which decisions quietly hold this codebase together. |
 | `tangle_discoveries` | Phantom couplings across the whole repository. |
+| `tangle_structure` | Whole-graph questions: load-bearing files (`pageRank`), bridges (`betweenness`), coupling islands (`WCC`), bus factor. |
 
 ### The verdict
 
@@ -313,7 +319,7 @@ Three properties, each of which cost something to get right:
 ### The self-correction hook
 
 ```bash
-npx tangle install --write --hook
+tangle install --write --hook
 ```
 
 Claude Code runs `PostToolUse` after any file-writing tool, so the check fires when the agent has just finished editing. It stays **silent** when there is nothing to say — a hook that speaks up on every edit trains people to disable it — and asks git for the origin remote, so one global install works across every project.
@@ -328,7 +334,7 @@ Claude Code runs `PostToolUse` after any file-writing tool, so the check fires w
 <summary>Text version, for reading in a terminal or in a diff</summary>
 
 ```text
-  +-- 1. INGEST --- once per repo, ~124s on next.js ---------------------+
+  +-- 1. INGEST --- once per repo, ~90s couplings-only, ~2 min full ----+
   |                                                                     |
   |   git history ---> coupling --+                                    |
   |    35,771 commits    co-change |                                   |
@@ -660,6 +666,14 @@ Clustering reports what it found, including when the answer is "there isn't one"
 - **On-demand ingest.** Paste a PR link from any public repo. If its graph is not in FalkorDB, `POST /api/analyze` returns `202`, ingests in the background (couplings-only, last 4,000 commits by default; override with `TANGLE_ONDEMAND_COMMITS`), and the UI polls until it is ready. One job per repo; failures are reported once and retried on the next request. The repository dropdown is gone - the repo comes from the link.
 - **PRs that only add new files.** New files have no history, so they used to fail with "None of the changed files exist in the graph". The engine now anchors on up to five files from the nearest existing parent directory and says so in `degraded`. If no ancestor directory exists in the graph (for example a brand-new top-level file) it still errors.
 - **Dependency map.** Layout is solved once, then a single capped (~40 fps) loop does a short spring-out and a small idle wiggle. It cancels on redraw, stops when hidden, and never runs pairwise physics per frame.
+
+## 🤖 AI usage
+
+This project was built for **Graph Hacks: Context for AI Agents**, and the hackathon asks for a disclosure, so here it is.
+
+- **Code and prose were written with an AI coding assistant.** The design decisions, the measurements, and the claims are the author's; every number in this README is produced by a command in this repository (`npm run verify`, `npm run backtest`) rather than asserted by a model.
+- **Tangle does not call an LLM at runtime.** Ingest, coupling extraction, provenance, traversal and verification are deterministic graph operations in FalkorDB. No model is in the answer path, which is what lets `tangle verify` reprove the same result.
+- **The agent it serves is external.** Tangle exposes an MCP server so *your* agent (Claude Code, Cursor, OpenCode, and others) can query the graph. That is the agent the product is built for; it is not an agent Tangle runs.
 
 ## ⚖️ Known limitations
 

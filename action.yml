@@ -73,12 +73,21 @@ runs:
         mkdir -p "$RUNNER_TEMP/tangle"
         cd "$RUNNER_TEMP/tangle"
         # Download the published artifact. Pinned to the tag so a workflow is
-        # reproducible; `latest` is available by setting tangle-version.
-        curl -fsSL "https://codeload.github.com/Ashish-Patnaik/Tangle/tar.gz/refs/tags/${TANGLE_TAG}" \
-          | tar -xz --strip-components=1
+        # reproducible. If the tag does not exist yet (for example before the
+        # first release is cut), fall back to main so the action still runs
+        # instead of failing on a missing ref.
+        tag_url="https://codeload.github.com/Ashish-Patnaik/Tangle/tar.gz/refs/tags/${TANGLE_TAG}"
+        if curl -fsSL "$tag_url" -o tangle.tar.gz; then
+          echo "Tangle ${TANGLE_TAG} downloaded"
+        else
+          echo "Tag ${TANGLE_TAG} not found; falling back to main." >&2
+          curl -fsSL "https://codeload.github.com/Ashish-Patnaik/Tangle/tar.gz/refs/heads/main" -o tangle.tar.gz
+        fi
+        tar -xzf tangle.tar.gz --strip-components=1
+        rm -f tangle.tar.gz
         npm ci --omit=dev --silent
         npm run build --silent
-        echo "Tangle ${TANGLE_TAG} ready"
+        echo "Tangle ready"
 
     # ---- 4. start FalkorDB ----
     - name: Start FalkorDB

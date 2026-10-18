@@ -535,7 +535,7 @@ ORDER BY storedCoChanges DESC`;
  * to follow.
  *
  * The negated check is a depth-1 undirected edge existence test, and the depth
- * is deliberately low. Two measurements on vercel/next.js, 93,502 coupling
+ * is deliberately low. Two measurements on vercel/next.js, 143,488 coupling
  * edges and 14,412 import edges:
  *
  *   NOT (a)-[:IMPORTS]-(b)          746 ms    works
