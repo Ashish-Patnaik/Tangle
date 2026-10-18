@@ -12,6 +12,7 @@
     <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/MCP-Ready-34d399?style=for-the-badge" alt="MCP Ready" /></a>
     <a href="https://tangle-phi.vercel.app/"><img src="https://img.shields.io/badge/Live_Demo-Vercel-%23000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
     <a href="https://youtu.be/gUe0mkcUsl4?si=RTT2xEhrGZzdCVM_"><img src="https://img.shields.io/badge/Video_Demo-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube Demo" /></a>
+    <a href="https://dev.to/ashish_patnaik/tangle-a-code-coupling-graph-that-finds-the-files-your-pr-forgot-561p"><img src="https://img.shields.io/badge/Blog_Post-Dev.to-%230A0A0A?style=for-the-badge&logo=devdotto&logoColor=white" alt="Blog Post" /></a>
   </p>
 </div>
 
@@ -55,12 +56,13 @@ trains people to disable it, which is the usual way an agent check dies.
 
 ---
 
-## 📺 Live Demo & Video Walkthrough
+## 📺 Live Demo, Video Walkthrough & Deep-Dive Blog
 
 See Tangle in action—from mining Next.js commit history into FalkorDB and finding phantom couplings, to running the live Claude Code self-correction hook:
 
 * **🚀 Live App:** [https://tangle-phi.vercel.app/](https://tangle.vercel.app) *(Powered by Vercel + Render + FalkorDB Cloud)*
 * **🎥 Video Walkthrough (YouTube):** [Watch the 3-Minute Demo](https://youtu.be/gUe0mkcUsl4?si=RTT2xEhrGZzdCVM_)
+* **📖 Technical Blog Post (Dev.to):** [Tangle: A Code Coupling Graph That Finds the Files Your PR Forgot](https://dev.to/ashish_patnaik/tangle-a-code-coupling-graph-that-finds-the-files-your-pr-forgot-561p)
 
 ---
 
