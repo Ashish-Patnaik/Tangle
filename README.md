@@ -134,7 +134,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: tangle-dev/tangle@v1
+      - uses: Ashish-Patnaik/Tangle@v1
         with:
           tangle-version: v1
 ```
