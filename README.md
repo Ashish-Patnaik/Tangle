@@ -60,7 +60,7 @@ trains people to disable it, which is the usual way an agent check dies.
 
 See Tangle in action—from mining Next.js commit history into FalkorDB and finding phantom couplings, to running the live Claude Code self-correction hook:
 
-* **🚀 Live App:** [https://tangle-phi.vercel.app/](https://tangle.vercel.app) *(Powered by Vercel + Render + FalkorDB Cloud)*
+* **🚀 Live App:** [https://tangle-phi.vercel.app/](https://tangle-phi.vercel.app/) *(Powered by Vercel + Render + FalkorDB Cloud)*
 * **🎥 Video Walkthrough (YouTube):** [Watch the 3-Minute Demo](https://youtu.be/gUe0mkcUsl4?si=RTT2xEhrGZzdCVM_)
 * **📖 Technical Blog Post (Dev.to):** [Tangle: A Code Coupling Graph That Finds the Files Your PR Forgot](https://dev.to/ashish_patnaik/tangle-a-code-coupling-graph-that-finds-the-files-your-pr-forgot-561p)
 
@@ -71,7 +71,7 @@ See Tangle in action—from mining Next.js commit history into FalkorDB and find
 Three commands, from nothing to a working check.
 
 ```bash
-git clone https://github.com/Ashish-Patnaik/Tangle.git && cd tangle
+git clone https://github.com/Ashish-Patnaik/Tangle.git && cd Tangle
 npm install
 docker compose up -d                       # FalkorDB on :6379
 npm run ingest -- --repo vercel/next.js   # ~90s, couplings only
