@@ -71,7 +71,7 @@ See Tangle in action—from mining Next.js commit history into FalkorDB and find
 Three commands, from nothing to a working check.
 
 ```bash
-git clone https://github.com/tangle-dev/tangle && cd tangle
+git clone https://github.com/Ashish-Patnaik/Tangle.git && cd tangle
 npm install
 docker compose up -d                       # FalkorDB on :6379
 npm run ingest -- --repo vercel/next.js   # ~90s, couplings only
